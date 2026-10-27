@@ -1,0 +1,2 @@
+# Keep private data directory in repository structure.
+# Actual CSV submission files (*.csv) are excluded via .gitignore.
