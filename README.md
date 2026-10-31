@@ -1,116 +1,153 @@
-# Muszaini Binti Musa — Personal Portfolio Website (v1.0)
+# Muszaini Binti Musa — Personal Portfolio
 
-A responsive, vintage black-and-antique-gold editorial portfolio website built with **React.js (Vite)** and a **Node.js + Express** private contact enquiry API.
-
-## Overview
-
-This portfolio presents the documented legal foundation of **Muszaini Binti Musa** (LL.M. in Business Law, International Islamic University; LL.B. Hons, Staffordshire University, UK) alongside digital design services (websites, Canva design, brochures, flyers, posters) and ongoing learning in AI, machine learning, Agentic Engineering, and vibe coding.
-
-### Key Architectural Highlights
-- **Vintage Black-and-Gold Editorial Design**: Uses warm obsidian (`#11100E`), deep charcoal (`#201D18`), antique gold (`#C6A15B` / `#B18B36`), warm ivory (`#F3EBDD`), and muted stone (`#B9B1A2`) with `Cormorant Garamond` serif headings and `Source Sans 3` body typography.
-- **Strict CV Fidelity**: Only verified facts from the owner's CV are published. The unclear `2007–2011` OCR entry (`"2 h Offshore, Surrey United Kingdom"`) is intentionally kept unpublished in internal developer comments in `src/data/portfolioData.js` until confirmed by the owner.
-- **Private CSV Enquiry Persistence (`POST /api/contact`)**: Validates and sanitises `name`, `email`, `phone`, and `description`, applies honeypot spam checks and per-IP rate limiting, neutralises spreadsheet formula injection, escapes quotes/commas/newlines per RFC 4180, and writes to a private server-side file (`server/data/contact-submissions.csv`).
+> **Legal Professional · Digital & AI Explorer**  
+> A responsive, high-aesthetic personal portfolio with a vintage black-and-gold visual identity, credible legal foundation, ongoing AI/Agentic learning showcase, and a secure server-side enquiry system.
 
 ---
 
-## Repository Structure
+## 1. Visual & Editorial Identity
+- **Mood:** Vintage editorial, understated luxury, professional, timeless, and warm.
+- **Palette:**
+  - Charcoal Noir background (`#11100E`)
+  - Deep Espresso / Umber surfaces (`#1E1B16`, `#1B1814`)
+  - Antique Gold accents (`#C6A15B`, `#DFBF7A`)
+  - Warm Ivory primary typography (`#F5EFE6`)
+  - Muted Stone body text (`#B8B0A0`)
+- **Typography:**
+  - Headings: *Cormorant Garamond* (editorial serif)
+  - Body: *Plus Jakarta Sans* / *Inter* (modern clean sans-serif)
 
-```text
-.
-├── src/
-│   ├── components/
-│   │   ├── Header.jsx
-│   │   ├── Hero.jsx
-│   │   ├── SectionHeading.jsx
-│   │   ├── ExperienceTimeline.jsx
-│   │   ├── SkillGroup.jsx
-│   │   ├── EducationCard.jsx
-│   │   ├── ProjectCard.jsx
-│   │   ├── ContactForm.jsx
-│   │   └── Footer.jsx
-│   ├── sections/
-│   │   ├── AboutSection.jsx
-│   │   ├── ExperienceSection.jsx
-│   │   ├── SkillsSection.jsx
-│   │   ├── EducationSection.jsx
-│   │   ├── PortfolioSection.jsx
-│   │   └── ContactSection.jsx
-│   ├── data/
-│   │   └── portfolioData.js
-│   ├── styles/
-│   │   └── index.css
-│   ├── tests/
-│   │   └── contact.test.js
-│   ├── App.jsx
-│   └── main.jsx
-├── server/
-│   ├── data/
-│   │   └── .gitkeep
+---
+
+## 2. Source-of-Truth Content & Factual Integrity
+- **No Fabrications:** All career dates, qualifications, and achievements strictly reflect verified CV entries.
+- **Key Achievement:** Highlighted factual milestone: **RM1.7 Million recovered** from breach-of-contract cases at Petronas KLCC Education Sponsorship Unit.
+- **Honours & Distinctions:**
+  - **LL.M. in Business Law** (2006, International Islamic University Malaysia) — Graduated with **Distinction & Dean’s List**.
+  - **LL.B. in Law (Hons)** (1996, Staffordshire University, UK) — Member of the Law Society.
+- **AI & Agentic Engineering:** Explicitly framed as **active, ongoing learning and exploratory competencies** rather than established consulting credentials.
+- **Internal Verification Hold (2007–2011 entry):** Per requirements, the OCR-ambiguous entry (*"2 h Offshore, Surrey United Kingdom"*) remains safely excluded from the public career timeline until explicitly confirmed by the owner.
+
+---
+
+## 3. Architecture & Repository Structure
+
+```
+Portfolio/
+├── docs/
+│   └── PRD.md                       # Comprehensive Product Requirements Document
+├── client/                          # React + Vite Frontend
+│   ├── public/
+│   │   ├── favicon.svg              # Antique gold monogram favicon
+│   │   └── og-image.svg             # Social share card
+│   ├── src/
+│   │   ├── components/              # Navbar, Hero, About, Experience, Skills, Education, AreasOfInterest, ContactSection, Footer
+│   │   ├── data/
+│   │   │   └── portfolioData.js     # Single source-of-truth content file
+│   │   ├── styles/
+│   │   │   ├── variables.css        # Editorial design tokens
+│   │   │   ├── index.css            # Base styles, resets, utilities
+│   │   │   └── components.css       # Section and component styles
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── index.html                   # SEO tags, Google Fonts, Open Graph
+│   ├── vite.config.js               # Dev server & /api proxy to port 5001
+│   ├── package.json
+│   └── .env.example
+├── server/                          # Express.js REST API
 │   ├── src/
 │   │   ├── routes/
-│   │   │   └── contact.js
-│   │   ├── storage/
-│   │   │   └── csvStorage.js
-│   │   ├── validation/
-│   │   │   └── contactValidation.js
-│   │   ├── app.js
-│   │   └── index.js
-│   ├── .env.example
-│   └── package.json
-├── docs/
-│   └── PRD.md
-├── .env.example
-├── .gitignore
-├── index.html
-├── package.json
-└── vite.config.js
+│   │   │   └── contact.js           # POST /api/contact handler
+│   │   ├── utils/
+│   │   │   ├── csvStorage.js        # RFC 4180 CSV escaping & formula injection mitigation
+│   │   │   ├── rateLimiter.js       # In-memory IP-based rate limiting
+│   │   │   └── validator.js         # Input sanitization & honeypot spam protection
+│   │   ├── app.js                   # Express application setup
+│   │   └── server.js                # Server entry point
+│   ├── data/
+│   │   └── .gitkeep                 # Submissions stored privately here (ignored by git)
+│   ├── test-contact.js              # Automated backend test suite
+│   ├── package.json
+│   └── .env.example
+├── .gitignore                       # Protects node_modules and private CSV records
+├── package.json                     # Root orchestration scripts
+└── README.md
 ```
 
 ---
 
-## Local Setup & Development Commands
+## 4. Security & Privacy Features
 
-### 1. Install Dependencies
+1. **Private Server-Side Storage:**
+   - Enquiries are appended server-side to `server/data/contact-submissions.csv`.
+   - The file is placed outside the public frontend root and excluded from Git via `.gitignore`.
+   - Never exposed through any public URL or GET endpoint.
+2. **RFC 4180 Escaping & CSV Injection Defense:**
+   - Quotes, commas, and newlines are safely quoted.
+   - Formula-leading symbols (`=`, `+`, `-`, `@`, `\t`, `\r`) are automatically prefixed with a single apostrophe (`'`) to neutralize spreadsheet execution vulnerabilities.
+3. **Spam & Abuse Protection:**
+   - Hidden honeypot field (`website_hp`) silently catches automated bots without disrupting genuine users.
+   - Built-in rate limiter restricts repeated submissions from a single IP address (default: 10 requests per 15 minutes).
+4. **Consent Checkbox & Privacy Notice:**
+   - Explicit user consent required before transmission (un-checked by default).
+   - Clear notice explaining that contact details are used solely to review and respond to enquiries.
+
+---
+
+## 5. Getting Started (Local Development)
+
+### Prerequisites
+- Node.js (v18+ recommended, verified on v24)
+- npm (v9+)
+
+### Installation
+From the root directory:
 ```bash
-npm install
+# Install dependencies for both server and client
+npm run install:all
 ```
 
-### 2. Configure Environment Variables (Optional for Local Dev)
-Copy `.env.example` to `.env` if you wish to customise the port, rate limit, or CSV storage location:
+### Running Locally
+
+**Terminal 1 — API Server (runs on http://localhost:5001):**
 ```bash
-cp .env.example .env
+npm run dev:server
 ```
 
-### 3. Start the Backend API Server (`http://127.0.0.1:8000`)
+**Terminal 2 — React Client (runs on http://localhost:5173):**
 ```bash
-npm run server
+npm run dev:client
 ```
 
-### 4. Start the React + Vite Frontend (`http://localhost:5173`)
-In a separate terminal:
-```bash
-npm run dev
-```
-Vite automatically proxies `/api/*` requests to `http://127.0.0.1:8000`.
+*Note:* Vite automatically proxies `/api` calls from `http://localhost:5173` to `http://localhost:5001`.
 
-### 5. Run Verification Checks (Tests, Linter & Production Build)
+---
+
+## 6. Running Automated Tests
+
+Run the backend verification suite to validate validation, honeypot traps, RFC 4180 escaping, and CSV formula neutralization:
 ```bash
-npm test
-npm run lint
-npm run build
+npm run test
 ```
 
 ---
 
-## Where Private Submissions Are Stored & Deployment Requirements
+## 7. Production Deployment Notes
 
-- **Default Local Path**: `server/data/contact-submissions.csv` (configurable via `CONTACT_CSV_PATH`).
-- **CSV Columns**: `submitted_at_utc,name,email,phone,description`
-- **Security Controls**:
-  - The CSV file is stored outside `public/` and `dist/` and is blocked by `.gitignore` (`server/data/*.csv`, `*.csv`) so real enquiry data is never committed to Git.
-  - `server/src/storage/csvStorage.js` explicitly refuses any path inside `public/` or `dist/` and creates the file with `0600` (owner read/write only) permissions where supported.
-  - `GET /api/contact` returns `405 Method Not Allowed`; the API never returns saved enquiries to visitors.
-- **Production Deployment & Persistent Storage Note**:
-  - Ephemeral container filesystems (such as free-tier serverless instances or ephemeral PaaS dynos) wipe local files on redeploy or restart.
-  - **For production**, mount a persistent private disk/volume (e.g., Render Persistent Disk, Fly.io Volume, Railway Volume, or a dedicated VPS directory) and set `CONTACT_CSV_PATH=/mnt/private-data/contact-submissions.csv` over HTTPS.
-  - Restrict server access to the site owner/administrator, back up the CSV regularly, and periodically purge enquiries that have passed your retention period.
+1. **Persistent Storage Requirement:**
+   - Ephemeral container hosts (such as standard Vercel serverless or basic Heroku dynos) reset filesystems on redeployment.
+   - For production file-based persistence, ensure `server/data/` is mounted on a persistent volume (e.g., Render Persistent Disk, Railway Volume, AWS EBS, or Docker volume).
+   - Alternatively, point `STORAGE_FILE_PATH` to your persistent mount path in `.env`.
+2. **Environment Variables:**
+   - `PORT`: API server listening port (default `5001`).
+   - `CORS_ORIGIN`: Comma-separated list of allowed frontend domains.
+   - `STORAGE_FILE_PATH`: Path to the private CSV storage file.
+   - `VITE_API_BASE_URL`: Base URL of the backend API (if client and server are hosted on separate domains).
+
+---
+
+## 8. Owner Launch Checklist
+- [ ] Confirm exact organisation name and title for the 2007–2011 UK offshore role before publishing to timeline.
+- [ ] Confirm whether phone number (`0183933371`) should be displayed publicly or restricted to email + contact form.
+- [ ] Supply optional professional portrait and Canva/design project samples when ready.
+- [ ] Verify persistent storage directory configuration on chosen production host.

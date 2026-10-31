@@ -1,0 +1,73 @@
+:root {
+  /* Black Gradient Glow Palette */
+  --color-bg-primary: #030304;         /* Pure obsidian black */
+  --color-bg-secondary: #08080B;       /* Deep carbon black */
+  --color-surface: #0D0D11;            /* Sleek dark obsidian surface */
+  --color-surface-hover: #14141A;      /* Raised glowing obsidian surface */
+  --color-surface-card: #0A0A0E;       /* Deep black card base */
+  --color-surface-card-hover: #121218; /* Card hover base */
+
+  /* Gradient & Glow Tokens */
+  --gradient-bg-main: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 175, 55, 0.14) 0%, rgba(30, 30, 42, 0.25) 45%, rgba(3, 3, 4, 1) 100%),
+                      linear-gradient(180deg, #020203 0%, #07070A 35%, #0B0B10 65%, #020203 100%);
+  --gradient-card-black: linear-gradient(145deg, rgba(24, 24, 30, 0.92) 0%, rgba(10, 10, 14, 0.96) 55%, rgba(4, 4, 6, 0.99) 100%);
+  --gradient-card-black-hover: linear-gradient(145deg, rgba(32, 32, 40, 0.95) 0%, rgba(14, 14, 19, 0.97) 55%, rgba(6, 6, 9, 1) 100%);
+  --gradient-pill-black: linear-gradient(135deg, rgba(26, 26, 34, 0.95) 0%, rgba(10, 10, 14, 0.98) 100%);
+  --shadow-card-glow: 0 10px 35px -5px rgba(0, 0, 0, 0.9), 0 0 24px rgba(212, 175, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --shadow-card-glow-hover: 0 16px 45px -5px rgba(0, 0, 0, 0.95), 0 0 36px rgba(212, 175, 55, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+  /* Luminous Gold & Metallic Accents */
+  --color-gold-base: #D4AF37;          /* Luminous metallic gold */
+  --color-gold-light: #F3E5AB;         /* Bright champagne gold glow */
+  --color-gold-dim: #997A2C;           /* Deep burnished gold */
+  --color-gold-border: rgba(212, 175, 55, 0.26);
+  --color-gold-border-hover: rgba(243, 229, 171, 0.65);
+  --color-gold-glow: rgba(212, 175, 55, 0.22);
+  --color-gold-badge-bg: rgba(212, 175, 55, 0.12);
+
+  /* Crisp Editorial Text System */
+  --color-text-primary: #F8F8FA;       /* Crisp alabaster white */
+  --color-text-secondary: #B8B8C2;     /* Silver mist */
+  --color-text-tertiary: #7C7C88;      /* Muted slate */
+  --color-text-accent: #F3E5AB;        /* Highlight glow */
+
+  /* Status Colors */
+  --color-success-bg: rgba(52, 98, 63, 0.2);
+  --color-success-border: #4A8C5C;
+  --color-success-text: #A8E6B8;
+  --color-error-bg: rgba(120, 35, 35, 0.2);
+  --color-error-border: #A34848;
+  --color-error-text: #F2A4A4;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, Garamond, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing Scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --space-5xl: 128px;
+
+  /* Layout Containers */
+  --container-max: 1140px;
+  --container-narrow: 840px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}

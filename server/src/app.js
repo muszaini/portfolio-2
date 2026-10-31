@@ -1,100 +1,85 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createRateLimiter } from './utils/rateLimiter.js';
 import { createContactRouter } from './routes/contact.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DIST_DIR = path.resolve(__dirname, '../../dist');
 
-/**
- * Create and configure the Express application.
- */
-export function createApp(options = {}) {
+export function createApp(customConfig = {}) {
   const app = express();
 
-  // Trust first reverse proxy (Render, Railway, Fly.io, Nginx, Cloudflare)
-  // so per-IP rate limiting uses the real visitor IP in production.
-  app.set('trust proxy', 1);
-
-  // Security headers
-  app.disable('x-powered-by');
+  // Basic security headers
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-
-    // Strictly block any attempt to request a .csv file over HTTP
-    if (req.path && req.path.toLowerCase().endsWith('.csv')) {
-      return res.status(403).json({
-        error: 'Access to private data files is strictly forbidden.',
-      });
-    }
-    return next();
+    next();
   });
 
   // CORS configuration
-  const allowedOrigin = process.env.CORS_ORIGIN || '*';
+  const rawOrigins = process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173';
+  const allowedOrigins = rawOrigins.split(',').map((origin) => origin.trim()).filter(Boolean);
+
   app.use(
     cors({
-      origin: allowedOrigin,
-      methods: ['POST', 'GET', 'OPTIONS'],
+      origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps or curl) or if origin is in whitelist
+        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+          callback(null, true);
+        } else {
+          callback(new Error('Cross-Origin Request Blocked'));
+        }
+      },
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type'],
+      credentials: false
     })
   );
 
-  // Strict request body size limit (16kb) to prevent payload abuse
-  app.use(express.json({ limit: '16kb' }));
+  // Body parser with 100kb payload ceiling to prevent abuse
+  app.use(express.json({ limit: '100kb' }));
 
-  // Handle malformed JSON payloads cleanly
-  app.use((err, _req, res, next) => {
-    if (err instanceof SyntaxError && 'status' in err && err.status === 400) {
-      return res.status(400).json({
-        error: 'Malformed JSON request body.',
-        fieldErrors: { form: 'Malformed JSON request body.' },
-      });
-    }
-    if (err && err.type === 'entity.too.large') {
-      return res.status(400).json({
-        error: 'Request payload is too large.',
-        fieldErrors: { form: 'Request payload is too large.' },
-      });
-    }
-    return next(err);
+  // Storage path configuration
+  const defaultStoragePath = path.resolve(__dirname, '../data/contact-submissions.csv');
+  const storageFilePath = customConfig.storageFilePath || process.env.STORAGE_FILE_PATH || defaultStoragePath;
+
+  // Rate limiter for contact submissions
+  const rateLimitWindowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10);
+  const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '10', 10);
+  const contactLimiter = createRateLimiter({
+    windowMs: rateLimitWindowMs,
+    maxRequests: rateLimitMax
   });
 
-  // Healthcheck endpoint (never exposes sensitive data)
-  app.get('/api/health', (_req, res) => {
-    res.status(200).json({ status: 'ok', service: 'muszaini-portfolio-api' });
-  });
-
-  // Mount contact router
-  app.use('/api/contact', createContactRouter(options));
-
-  // Catch-all 404 for unknown API routes
-  app.use('/api/*', (_req, res) => {
-    res.status(404).json({ error: 'API endpoint not found.' });
-  });
-
-  // Serve built production frontend from dist/ when available
-  const serveStatic = options.serveStatic ?? fs.existsSync(path.join(DIST_DIR, 'index.html'));
-  if (serveStatic) {
-    app.use(
-      express.static(DIST_DIR, {
-        index: 'index.html',
-        dotfiles: 'deny',
-      })
-    );
-
-    app.get('*', (req, res, next) => {
-      if (req.path.startsWith('/api')) return next();
-      return res.sendFile(path.join(DIST_DIR, 'index.html'));
+  // Health check endpoint
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({
+      status: 'healthy',
+      service: 'muszaini-portfolio-api',
+      time: new Date().toISOString()
     });
-  }
+  });
+
+  // Mount contact router with rate limiting
+  app.use('/api/contact', contactLimiter, createContactRouter(storageFilePath));
+
+  // Catch-all 404 for unknown API endpoints
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Endpoint not found' });
+  });
+
+  // Global error handler
+  app.use((err, req, res, next) => {
+    if (err.message === 'Cross-Origin Request Blocked') {
+      return res.status(403).json({ error: 'CORS forbidden' });
+    }
+    console.error('Unhandled server error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
 
   return app;
 }
-
-export default createApp;

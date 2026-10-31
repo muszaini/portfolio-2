@@ -7,38 +7,28 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependencies & Build Output
-node_modules
-dist
-dist-ssr
+# Node dependencies
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Environment files
+# Environment variables
 .env
-.env.*
-!.env.example
-!server/.env.example
+.env.local
+.env.*.local
+*.env
 
-# Private Contact Form CSV Submissions (NEVER commit real enquiry data)
-server/data/*.csv
-data/*.csv
-contact-submissions.csv
-*.csv
-
-# Backups & Editor directories
-plateiq_backup/
-wayfare_backup/
-backend/
-.venv/
-__pycache__/
-*.py[cod]
-*.db
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Operating System
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Server private submission records - CRITICAL: Never commit enquiries to Git
+server/data/*.csv
+!server/data/.gitkeep

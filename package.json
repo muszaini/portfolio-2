@@ -1,28 +1,14 @@
 {
-  "name": "muszaini-portfolio",
-  "private": true,
+  "name": "muszaini-musa-portfolio",
   "version": "1.0.0",
-  "type": "module",
-  "description": "Personal Portfolio for Muszaini Binti Musa — Legal Professional, Digital Design & Ongoing AI Exploration",
+  "private": true,
+  "description": "Personal portfolio website for Muszaini Binti Musa - Legal Professional, Digital & Emerging AI Explorer",
   "scripts": {
-    "dev": "vite",
-    "server": "node server/src/index.js",
-    "start": "NODE_ENV=production node server/src/index.js",
-    "build": "vite build",
-    "lint": "oxlint src server/src",
-    "test": "vitest run",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^4.22.3",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^6.1.1",
-    "oxlint": "^1.81.0",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.4"
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start",
+    "test": "npm --prefix server test"
   }
 }
