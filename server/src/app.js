@@ -21,13 +21,26 @@ export function createApp(customConfig = {}) {
   });
 
   // CORS configuration
-  const rawOrigins = process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173';
+  const rawOrigins =
+    process.env.CORS_ORIGIN ||
+    'http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174';
   const allowedOrigins = rawOrigins.split(',').map((origin) => origin.trim()).filter(Boolean);
+
+  // Include Vercel deployment URLs automatically when running on Vercel
+  [
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ]
+    .filter(Boolean)
+    .forEach((domain) => {
+      allowedOrigins.push(`https://${domain}`, `http://${domain}`);
+    });
 
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin (e.g. mobile apps or curl) or if origin is in whitelist
+        // Allow requests with no origin (e.g. same-origin, server-to-server, curl) or if origin is in whitelist
         if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
           callback(null, true);
         } else {
@@ -43,8 +56,10 @@ export function createApp(customConfig = {}) {
   // Body parser with 100kb payload ceiling to prevent abuse
   app.use(express.json({ limit: '100kb' }));
 
-  // Storage path configuration
-  const defaultStoragePath = path.resolve(__dirname, '../data/contact-submissions.csv');
+  // Storage path configuration (use writable /tmp fallback on Vercel serverless if STORAGE_FILE_PATH is unset)
+  const defaultStoragePath = process.env.VERCEL
+    ? '/tmp/contact-submissions.csv'
+    : path.resolve(__dirname, '../data/contact-submissions.csv');
   const storageFilePath = customConfig.storageFilePath || process.env.STORAGE_FILE_PATH || defaultStoragePath;
 
   // Rate limiter for contact submissions
@@ -55,8 +70,8 @@ export function createApp(customConfig = {}) {
     maxRequests: rateLimitMax
   });
 
-  // Health check endpoint
-  app.get('/api/health', (req, res) => {
+  // Health check endpoint (supports both /api/health and /health)
+  app.get(['/api/health', '/health'], (req, res) => {
     res.status(200).json({
       status: 'healthy',
       service: 'muszaini-portfolio-api',
@@ -64,8 +79,9 @@ export function createApp(customConfig = {}) {
     });
   });
 
-  // Mount contact router with rate limiting
-  app.use('/api/contact', contactLimiter, createContactRouter(storageFilePath));
+  // Mount contact router with rate limiting (supports both /api/contact and /contact)
+  const contactRouter = createContactRouter(storageFilePath);
+  app.use(['/api/contact', '/contact'], contactLimiter, contactRouter);
 
   // Catch-all 404 for unknown API endpoints
   app.use((req, res) => {

@@ -83,7 +83,7 @@ export default function ContactSection() {
     setServerMessage('');
 
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+      const apiBase = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
       const endpoint = `${apiBase}/api/contact`;
 
       const response = await fetch(endpoint, {
