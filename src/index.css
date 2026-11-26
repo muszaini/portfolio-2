@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-obsidian: #101010;
+  --color-charcoal: #191919;
+  --color-charcoal-light: #22211F;
+  --color-gold: #C6A15B;
+  --color-gold-light: #D7B878;
+  --color-ivory: #F4F0E8;
+  --color-stone: #A7A29A;
+  --color-hairline: #292723;
+}
+
+:root {
+  color-scheme: dark;
+  --bg-primary: #101010;
+  --bg-secondary: #191919;
+  --accent-gold: #C6A15B;
+  --text-primary: #F4F0E8;
+  --text-muted: #A7A29A;
+  --border-gold: rgba(198, 161, 91, 0.22);
+  --border-subtle: rgba(244, 240, 232, 0.08);
+}
+
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+}
+
+/* Subtle architectural editorial hairline divider */
+.editorial-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(198, 161, 91, 0.35) 20%,
+    rgba(198, 161, 91, 0.35) 80%,
+    transparent 100%
+  );
+}
+
+/* Focus visibility for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #C6A15B;
+  outline-offset: 3px;
+}
+
+/* Subtle custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #101010;
+}
+::-webkit-scrollbar-thumb {
+  background: #2C2A26;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C6A15B;
+}
+
+/* Clean executive white-paper print sheet when printing the CV Summary Modal */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body.printing-cv-active {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  body.printing-cv-active header,
+  body.printing-cv-active main,
+  body.printing-cv-active footer,
+  body.printing-cv-active .no-print {
+    display: none !important;
+  }
+
+  body.printing-cv-active .cv-print-backdrop {
+    position: static !important;
+    inset: auto !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  body.printing-cv-active .cv-print-sheet {
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body.printing-cv-active .cv-print-heading {
+    color: #111111 !important;
+  }
+
+  body.printing-cv-active .cv-print-body {
+    color: #262626 !important;
+  }
+
+  body.printing-cv-active .cv-print-muted {
+    color: #525252 !important;
+  }
+
+  body.printing-cv-active .cv-print-accent {
+    color: #8c6a2b !important;
+  }
+
+  body.printing-cv-active .cv-print-border {
+    border-color: #d4c3a1 !important;
+  }
+
+  body.printing-cv-active .cv-print-card {
+    background: #fafafa !important;
+    border-color: #e2dfd8 !important;
+    break-inside: avoid;
+  }
+}

@@ -1,2 +1,0 @@
-# This file ensures the server/data directory is tracked in Git,
-# while the contact-submissions.csv data file is excluded via .gitignore.

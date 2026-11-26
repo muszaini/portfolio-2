@@ -1,34 +1,24 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Node dependencies
+# Dependencies
 node_modules/
-dist/
-dist-ssr/
-*.local
 
-# Environment variables
+# Production build
+dist/
+.vercel/
+
+# Environment variables (never commit secrets or private contact info)
 .env
 .env.local
 .env.*.local
-*.env
 
-# Operating System
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editor & OS files
 .DS_Store
-Thumbs.db
-
-# IDE & Editors
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
-
-# Server private submission records - CRITICAL: Never commit enquiries to Git
-server/data/*.csv
-!server/data/.gitkeep

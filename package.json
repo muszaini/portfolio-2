@@ -1,14 +1,37 @@
 {
   "name": "muszaini-musa-portfolio",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Personal portfolio website for Muszaini Binti Musa - Legal Professional, Digital & Emerging AI Explorer",
+  "type": "module",
+  "description": "Professional portfolio for Muszaini Musa — Business-Focused Digital Solutions Builder",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
-    "install:all": "npm --prefix server install && npm --prefix client install",
-    "dev:server": "npm --prefix server run dev",
-    "dev:client": "npm --prefix client run dev",
-    "build": "npm --prefix client run build",
-    "start": "npm --prefix server start",
-    "test": "npm --prefix server test"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.0",
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@tailwindcss/vite": "^4.0.9",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "tailwindcss": "^4.0.9",
+    "vite": "^6.2.0",
+    "vitest": "^5.1.1"
   }
 }
